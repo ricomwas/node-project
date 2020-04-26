@@ -41,38 +41,39 @@ module.exports = {
     login: (req, res) => {
         const body = req.body;
         getUserByUserEmail(body.email, (err, results) => {
-            console.log(req.body.email);
-            console.log(req.body.password);
             if (err) {
-                console.log("Error Encountered");
+                res.send('Email not found!!')
                 console.log(err)
-            }
-            if (results == null) {
 
+            }
+            /* if (!results) {
                 return res.json({
                     success: 0,
-                    data: "Invalid email or password"
+                    data: "Invalid Email or Password"
                 });
-            }
+            } */
             const result = bcrypt.compareSync(body.password, results.password);
             if (result) {
                 results.password = null;
                 const jsontoken = sign({
                     result: results
                 }, process.env.JSONTOKEN, {
-                    expiresIn: "1h"
+                    expiresIn: '1h'
                 });
                 return res.json({
                     success: 1,
-                    message: "login successfully",
+                    message: 'Login Successfully',
                     token: jsontoken
                 });
             } else {
                 return res.json({
                     success: 0,
-                    data: "Invalid email or password"
+                    data: 'invalid Email or Password Again!!!'
                 });
             }
+
+
+
         });
     },
     getUsersByUserId: (req, res) => {
